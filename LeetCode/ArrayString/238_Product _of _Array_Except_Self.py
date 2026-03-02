@@ -22,21 +22,12 @@ class Solution:
             return answer
 
 
-
-        answer_dict = {}
+        all_products = 1
+        for n in nums:
+            all_products *= n
+        
         for i in range(0, len(nums)):
-            if nums[i] in answer_dict:
-                answer[i] = answer_dict[nums[i]]
-            elif nums[i]*-1 in answer_dict:
-                answer[i] = answer_dict[nums[i]*-1] * -1
-                answer_dict[nums[i]] = answer_dict[nums[i]*-1] * -1
-            else:
-                all_product = 1
-                for j in range(0,len(nums)):
-                    if j != i:
-                        all_product *= nums[j]
-                answer[i] = all_product
-                answer_dict[nums[i]] = answer[i]
+            answer[i] = int(all_products / nums[i])
         
         
         return answer
