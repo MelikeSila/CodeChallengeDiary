@@ -1,47 +1,31 @@
 class Solution:
 
     def productExceptSelf(self, nums: List[int]) -> List[int]:
-        answer = [0]*len(nums)
-        all_products = 1
+        # nums = [a, b, c, d]
+        # nums[i]*nums[i+1] = x --> i = 0
+        # nums[j]*nums[j-1] = y --> j = len(nums)
+        # x = [a, ab, abc, abcd] --> shift to right --> [1, a, ab, abc]
+        # y = [abcd, bcd, cd, d] --> shift to left -->  [bcd, cd, d, 1]
+        # multiply x and y --> [bcd, acd, abd, abc] --> our results
 
-        zero_count = 0
-        for n in nums:
-            if n == 0:
-                zero_count += 1
-            if zero_count >= 2:
-                break
+        results = [1]*len(nums)
+        x = [1]*len(nums)
+        y = [1]*len(nums)
 
-        # if there are more than 1 zero than all answers will be zero
-        if zero_count >= 2:
-            return [0]*len(nums)
-        # if there is just one zero than all answers will be zero except one nums[i]=0
-        elif zero_count == 1:
-            for j in range(0, len(nums)):
-                if nums[j] != 0:
-                    all_products *= nums[j]
-                else:
-                    index = j
-            answer[index] = all_products
-            return answer
+        # calculate x
+        cumulative = 1
+        for i in range(len(nums)-1):
+            x[i+1] = nums[i]*cumulative
+            cumulative *= nums[i]
+        
+        # calculate y
+        cumulative = 1
+        for i in range(len(nums)-1, 0, -1 ):
+            y[i-1] = nums[i]*cumulative
+            cumulative *= nums[i]
 
-        # O(n/2)
-        n = len(nums)
-        odd = 0
-        if n%2 == 0:
-            a = int(n/2)
-        else:
-            a = int(n/2) + 1
-            odd = 1
-        
-        for i in range(0, a):
-            all_products = all_products * nums[i] * nums[-i-1]
-        
-        if odd:
-            all_products = all_products/nums[a-1]
+        # x*y
+        for i in range(len(results)):
+            results[i] = x[i]*y[i]
 
-        for i in range(0, a):
-            answer[i] = int(all_products/nums[i])
-            answer[-i-1] = int(all_products / nums [-i-1])
-        
-        
-        return answer
+        return results
